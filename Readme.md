@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Олег Кущ](https://up.htmlacademy.ru/javascript/16/user/848615).
-* Наставник: `Неизвестно`.
+* Наставник: [Анастасия Шевченко](https://htmlacademy.ru/profile/id125164).
 
 ---
 
