@@ -133,16 +133,10 @@ var createElement = function (tagName, className, text) {
 
 var generateAd = function (adNum) {
   /* Генерим елементы и наполняем их */
-  var ad = document.querySelector('#card')
-  .content
-  .querySelector('.map__card')
-  .cloneNode(true);
-  var adTitle = ad.querySelector('.popup__title');
-  adTitle.textContent = adArray[adNum].offer.title;
-  var adAddress = ad.querySelector('.popup__text--address');
-  adAddress.textContent = adArray[adNum].offer.address;
-  var adPrice = ad.querySelector('.popup__text--price');
-  adPrice.textContent = adArray[adNum].offer.price + '₽/ночь';
+  var ad = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
+  ad.querySelector('.popup__title').textContent = adArray[adNum].offer.title;
+  ad.querySelector('.popup__text--address').textContent = adArray[adNum].offer.address;
+  ad.querySelector('.popup__text--price').textContent = adArray[adNum].offer.price + '₽/ночь';
   var adType = ad.querySelector('.popup__type');
   if (adArray[adNum].offer.type === 'flat') {
     adType.textContent = 'Квартира';
@@ -158,12 +152,8 @@ var generateAd = function (adNum) {
   }
   var roomString = declOfNum(adArray[adNum].offer.rooms, [' комната', ' комнаты', ' комнат']);
   var guestString = declOfNum(adArray[adNum].offer.guests, [' гостя', ' гостей', ' гостей']);
-  var adCapacity = ad.querySelector('.popup__text--capacity');
-  adCapacity.textContent = adArray[adNum].offer.rooms + roomString + ' для ' + adArray[adNum].offer.guests + guestString;
-
-  var adTime = ad.querySelector('.popup__text--time');
-  adTime.textContent = 'Заезд после ' + adArray[adNum].offer.checkin + ', выезд до ' + adArray[adNum].offer.checkout;
-
+  ad.querySelector('.popup__text--capacity').textContent = adArray[adNum].offer.rooms + roomString + ' для ' + adArray[adNum].offer.guests + guestString;
+  ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + adArray[adNum].offer.checkin + ', выезд до ' + adArray[adNum].offer.checkout;
   var adFeaturesElements = ad.querySelectorAll('.popup__feature');
   Array.prototype.forEach.call(adFeaturesElements, function (node) {
     node.parentNode.removeChild(node);
@@ -174,8 +164,7 @@ var generateAd = function (adNum) {
     fragment.appendChild(featureEl);
   }
   adFeatures.appendChild(fragment);
-  var adDescription = ad.querySelector('.popup__description');
-  adDescription.textContent = adArray[adNum].offer.description;
+  ad.querySelector('.popup__description').textContent = adArray[adNum].offer.description;
   var adPhotos = ad.querySelector('.popup__photos');
   for (i = 0; i < adArray[adNum].offer.photos.length; i++) {
     var photoEl;
@@ -188,8 +177,7 @@ var generateAd = function (adNum) {
     fragment.appendChild(photoEl);
   }
   adPhotos.appendChild(fragment);
-  var adAvatar = ad.querySelector('.popup__avatar');
-  adAvatar.src = adArray[adNum].author.avatar;
+  ad.querySelector('.popup__avatar').src = adArray[adNum].author.avatar;
   return ad;
 };
 
