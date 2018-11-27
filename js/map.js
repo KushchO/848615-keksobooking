@@ -182,17 +182,18 @@ var generateAd = function (adNum) {
   var adClose = createElement('button', 'popup__close', 'Закрыть');
   adClose.type = 'button';
   /* Добавляе элементы в объявление */
-  ad.appendChild(adAvatar);
-  ad.appendChild(adClose);
-  ad.appendChild(adTitle);
-  ad.appendChild(adAddress);
-  ad.appendChild(adPrice);
-  ad.appendChild(adType);
-  ad.appendChild(adCapacity);
-  ad.appendChild(adTime);
-  ad.appendChild(adFeatures);
-  ad.appendChild(adDescription);
-  ad.appendChild(adPhotos);
+  fragment.appendChild(adAvatar);
+  fragment.appendChild(adClose);
+  fragment.appendChild(adTitle);
+  fragment.appendChild(adAddress);
+  fragment.appendChild(adPrice);
+  fragment.appendChild(adType);
+  fragment.appendChild(adCapacity);
+  fragment.appendChild(adTime);
+  fragment.appendChild(adFeatures);
+  fragment.appendChild(adDescription);
+  fragment.appendChild(adPhotos);
+  ad.appendChild(fragment);
   return ad;
 };
 
