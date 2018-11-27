@@ -133,11 +133,17 @@ var createElement = function (tagName, className, text) {
 
 var generateAd = function (adNum) {
   /* Генерим елементы и наполняем их */
-  var ad = createElement('article', ['map__card', 'popup']);
-  var adTitle = createElement('h3', 'popup__title', adArray[adNum].offer.title);
-  var adAddress = createElement('p', ['popup__text', 'popup__text--address'], adArray[adNum].offer.address);
-  var adPrice = createElement('p', ['popup__text', 'popup__text--price'], adArray[adNum].offer.price + '₽/ночь');
-  var adType = createElement('h4', 'popup__type');
+  var ad = document.querySelector('#card')
+  .content
+  .querySelector('.map__card')
+  .cloneNode(true);
+  var adTitle = ad.querySelector('.popup__title');
+  adTitle.textContent = adArray[adNum].offer.title;
+  var adAddress = ad.querySelector('.popup__text--address');
+  adAddress.textContent = adArray[adNum].offer.address;
+  var adPrice = ad.querySelector('.popup__text--price');
+  adPrice.textContent = adArray[adNum].offer.price + '₽/ночь';
+  var adType = ad.querySelector('.popup__type');
   if (adArray[adNum].offer.type === 'flat') {
     adType.textContent = 'Квартира';
   }
@@ -152,48 +158,38 @@ var generateAd = function (adNum) {
   }
   var roomString = declOfNum(adArray[adNum].offer.rooms, [' комната', ' комнаты', ' комнат']);
   var guestString = declOfNum(adArray[adNum].offer.guests, [' гостя', ' гостей', ' гостей']);
-  var adCapacity = createElement('p', ['popup__text', 'popup__text--capacity'], adArray[adNum].offer.rooms + roomString + ' для ' + adArray[adNum].offer.guests + guestString);
-  var adTime = createElement('p', ['popup__text', 'popup__text--capacity'], 'Заезд после ' + adArray[adNum].offer.checkin + ', выезд до ' + adArray[adNum].offer.checkout);
-  var adFeatures = createElement('ul', 'popup__features');
+  var adCapacity = ad.querySelector('.popup__text--capacity');
+  adCapacity.textContent = adArray[adNum].offer.rooms + roomString + ' для ' + adArray[adNum].offer.guests + guestString;
+
+  var adTime = ad.querySelector('.popup__text--time');
+  adTime.textContent = 'Заезд после ' + adArray[adNum].offer.checkin + ', выезд до ' + adArray[adNum].offer.checkout;
+
+  var adFeaturesElements = ad.querySelectorAll('.popup__feature');
+  Array.prototype.forEach.call(adFeaturesElements, function (node) {
+    node.parentNode.removeChild(node);
+  });
+  var adFeatures = ad.querySelector('.popup__features');
   for (var i = 0; i < adArray[adNum].offer.features.length; i++) {
     var featureEl = createElement('li', ['popup__feature', 'popup__feature--' + adArray[adNum].offer.features[i]]);
     fragment.appendChild(featureEl);
   }
   adFeatures.appendChild(fragment);
-  var adDescription = document.createElement('p');
+  var adDescription = ad.querySelector('.popup__description');
   adDescription.textContent = adArray[adNum].offer.description;
-  adDescription.classList.add('popup__description');
-  var adPhotos = document.createElement('div');
+  var adPhotos = ad.querySelector('.popup__photos');
   for (i = 0; i < adArray[adNum].offer.photos.length; i++) {
-    var photoEl = document.createElement('img');
+    var photoEl;
+    if (i === adArray[adNum].offer.photos.length - 1) {
+      photoEl = ad.querySelector('.popup__photo');
+    } else {
+      photoEl = ad.querySelector('.popup__photo').cloneNode(true);
+    }
     photoEl.src = adArray[adNum].offer.photos[i];
-    photoEl.width = 45;
-    photoEl.height = 40;
-    photoEl.alt = 'Фотография жилья';
-    photoEl.classList.add('popup__photo');
     fragment.appendChild(photoEl);
   }
   adPhotos.appendChild(fragment);
-  var adAvatar = createElement('img', 'popup__avatar');
+  var adAvatar = ad.querySelector('.popup__avatar');
   adAvatar.src = adArray[adNum].author.avatar;
-  adAvatar.width = 70;
-  adAvatar.height = 70;
-  adAvatar.alt = 'Аватар пользователя';
-  var adClose = createElement('button', 'popup__close', 'Закрыть');
-  adClose.type = 'button';
-  /* Добавляе элементы в объявление */
-  fragment.appendChild(adAvatar);
-  fragment.appendChild(adClose);
-  fragment.appendChild(adTitle);
-  fragment.appendChild(adAddress);
-  fragment.appendChild(adPrice);
-  fragment.appendChild(adType);
-  fragment.appendChild(adCapacity);
-  fragment.appendChild(adTime);
-  fragment.appendChild(adFeatures);
-  fragment.appendChild(adDescription);
-  fragment.appendChild(adPhotos);
-  ad.appendChild(fragment);
   return ad;
 };
 
