@@ -237,7 +237,6 @@ document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === 27 && activeAdCard) {
     activeAdCard.classList.remove('active');
     activeAdCard.classList.add('hidden');
-
   }
 });
 
