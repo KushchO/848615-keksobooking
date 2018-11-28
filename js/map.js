@@ -100,7 +100,7 @@ var generatePins = function () {
     var pinImg = document.createElement('img');
     /* Генерим button */
     pin.classList.add('map__pin');
-    pin.style = 'left: ' + (locationListX[i] + 25) + 'px; top: ' + (locationListY[i] + 70) + 'px';
+    pin.style = 'left: ' + (locationListX[i] + 25) + 'px; top: ' + (locationListY[i]) + 'px';
     pin.setAttribute('type', 'button');
     /* Генерим img */
     pinImg.src = adArray[i].author.avatar;
@@ -220,8 +220,8 @@ var addPinClickHandler = function (pin, card) {
   });
 };
 
-for (i = 0; i < pins.length; i++) {
-  addPinClickHandler(pins[i], adCards[i]);
+for (var j = 1; j < pins.length; j++) {
+  addPinClickHandler(pins[j], adCards[j - 1]);
 }
 
 map.addEventListener('click', function (evt) {
