@@ -13,7 +13,6 @@ var featuresList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'cond
 var photosList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 /* Создаем переменные и  */
 var fragment = document.createDocumentFragment();
-<<<<<<< HEAD
 var fragmentCards = document.createDocumentFragment();
 var pinBlock = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
@@ -21,13 +20,6 @@ var mapFilters = document.querySelector('.map__filters-container');
 var mainPin = document.querySelector('.map__pin--main');
 var adFormAddress = document.querySelector('#address');
 
-=======
-var pinBlock = document.querySelector('.map__pins');
-var map = document.querySelector('.map');
-var mapFilters = document.querySelector('.map__filters-container');
-
-/* Служебные функции */
->>>>>>> master
 function getRandomInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -47,12 +39,6 @@ function declOfNum(number, titles) {
   return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
-<<<<<<< HEAD
-=======
-/* Определяем размер блока карты */
-map.classList.remove('map--faded');
-
->>>>>>> master
 var generateArryasForadObject = function () {
   for (var i = 1; i < 9; i++) {
     /* Генерируем массив ссылок на авторов объявлений */
@@ -62,11 +48,7 @@ var generateArryasForadObject = function () {
     }
     AuthorList.push('img/avatars/user' + authorId + '.png');
     /* Генерируем массив коородинат локаций и заполняем массив адресов */
-<<<<<<< HEAD
     var addressX = getRandomInRange(25, map.offsetWidth - 25);
-=======
-    var addressX = getRandomInRange(0, map.offsetWidth - 50);
->>>>>>> master
     var addressY = getRandomInRange(130, 630);
     var address = addressX + ', ' + addressY;
     locationListX.push(addressX);
@@ -133,11 +115,8 @@ var generatePins = function () {
 generatePins();
 pinBlock.appendChild(fragment);
 
-<<<<<<< HEAD
 var pins = document.querySelectorAll('.map__pin');
 
-=======
->>>>>>> master
 var createElement = function (tagName, className, text) {
   var element = document.createElement(tagName);
   if (className.constructor.name === 'Array') {
@@ -202,7 +181,6 @@ var generateAd = function (adNum) {
   ad.querySelector('.popup__avatar').src = adArray[adNum].author.avatar;
   return ad;
 };
-<<<<<<< HEAD
 /* Генерим разные карточки */
 
 for (var i = 0; i < adArray.length; i++) {
@@ -272,7 +250,3 @@ mainPin.addEventListener('mouseup', function () {
   mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + 22);
   calculateAddress(mainPinLeft, mainPinTop);
 });
-=======
-
-map.insertBefore(generateAd(0), mapFilters);
->>>>>>> master
