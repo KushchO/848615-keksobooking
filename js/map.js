@@ -199,7 +199,9 @@ Array.prototype.forEach.call(adFormFieldsets, function (elem) {
 Array.prototype.forEach.call(adCards, function (elem) {
   elem.classList.add('hidden');
 });
-
+var mapOverlay = document.querySelector('.map__overlay');
+mapOverlay.style.zIndex = '10';
+mainPin.style.zIndex = '15';
 
 /* Определяем начальный адрес метки */
 map.position = 'relative';
@@ -215,6 +217,11 @@ calculateAddress(mainPinLeft, mainPinTop);
 
 var addPinClickHandler = function (pin, card) {
   pin.addEventListener('click', function () {
+    var activPin = document.querySelector('.active');
+    if (activPin) {
+      activPin.classList.add('hidden');
+      activPin.classList.remove('active');
+    }
     card.classList.remove('hidden');
     card.classList.add('active');
   });
@@ -244,6 +251,7 @@ document.addEventListener('keydown', function (evt) {
 mainPin.addEventListener('mouseup', function () {
   adForm.classList.remove('ad-form--disabled');
   map.classList.remove('map--faded');
+  mapOverlay.style.zIndex = '0';
   Array.prototype.forEach.call(adFormFieldsets, function (elem) {
     elem.disabled = false;
   });
