@@ -13,11 +13,13 @@ var featuresList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'cond
 var photosList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 /* Создаем переменные и  */
 var fragment = document.createDocumentFragment();
+var fragmentCards = document.createDocumentFragment();
 var pinBlock = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
 var mapFilters = document.querySelector('.map__filters-container');
+var mainPin = document.querySelector('.map__pin--main');
+var adFormAddress = document.querySelector('#address');
 
-/* Служебные функции */
 function getRandomInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -37,9 +39,6 @@ function declOfNum(number, titles) {
   return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
-/* Определяем размер блока карты */
-map.classList.remove('map--faded');
-
 var generateArryasForadObject = function () {
   for (var i = 1; i < 9; i++) {
     /* Генерируем массив ссылок на авторов объявлений */
@@ -49,7 +48,7 @@ var generateArryasForadObject = function () {
     }
     AuthorList.push('img/avatars/user' + authorId + '.png');
     /* Генерируем массив коородинат локаций и заполняем массив адресов */
-    var addressX = getRandomInRange(0, map.offsetWidth - 50);
+    var addressX = getRandomInRange(25, map.offsetWidth - 25);
     var addressY = getRandomInRange(130, 630);
     var address = addressX + ', ' + addressY;
     locationListX.push(addressX);
@@ -101,7 +100,7 @@ var generatePins = function () {
     var pinImg = document.createElement('img');
     /* Генерим button */
     pin.classList.add('map__pin');
-    pin.style = 'left: ' + (locationListX[i] + 25) + 'px; top: ' + (locationListY[i] + 70) + 'px';
+    pin.style = 'left: ' + (locationListX[i] + 25) + 'px; top: ' + (locationListY[i]) + 'px';
     pin.setAttribute('type', 'button');
     /* Генерим img */
     pinImg.src = adArray[i].author.avatar;
@@ -115,6 +114,8 @@ var generatePins = function () {
 };
 generatePins();
 pinBlock.appendChild(fragment);
+
+var pins = document.querySelectorAll('.map__pin');
 
 var createElement = function (tagName, className, text) {
   var element = document.createElement(tagName);
@@ -180,5 +181,80 @@ var generateAd = function (adNum) {
   ad.querySelector('.popup__avatar').src = adArray[adNum].author.avatar;
   return ad;
 };
+/* Генерим разные карточки */
 
-map.insertBefore(generateAd(0), mapFilters);
+for (var i = 0; i < adArray.length; i++) {
+  fragmentCards.appendChild(generateAd(i));
+}
+map.insertBefore(fragmentCards, mapFilters);
+
+var adCards = document.querySelectorAll('.map__card');
+
+/* Переводим все элементы в неактивное состояние */
+var adForm = document.querySelector('.ad-form');
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
+Array.prototype.forEach.call(adFormFieldsets, function (elem) {
+  elem.disabled = true;
+});
+Array.prototype.forEach.call(adCards, function (elem) {
+  elem.classList.add('hidden');
+});
+var mapOverlay = document.querySelector('.map__overlay');
+mapOverlay.style.zIndex = '10';
+mainPin.style.zIndex = '15';
+
+/* Определяем начальный адрес метки */
+map.position = 'relative';
+adFormAddress.disabled = true;
+var calculateAddress = function (left, top) {
+  adFormAddress.placeholder = left + ', ' + top;
+};
+var mainPinLeft = Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2);
+var mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight / 2);
+calculateAddress(mainPinLeft, mainPinTop);
+
+/* Добовляем обработчики на метки и карточку */
+
+var addPinClickHandler = function (pin, card) {
+  pin.addEventListener('click', function () {
+    var activPin = document.querySelector('.active');
+    if (activPin) {
+      activPin.classList.add('hidden');
+      activPin.classList.remove('active');
+    }
+    card.classList.remove('hidden');
+    card.classList.add('active');
+  });
+};
+
+for (var j = 1; j < pins.length; j++) {
+  addPinClickHandler(pins[j], adCards[j - 1]);
+}
+
+map.addEventListener('click', function (evt) {
+  var target = evt.target;
+  if (target.className === 'popup__close') {
+    target.parentNode.classList.add('hidden');
+    target.parentNode.classList.remove('hidden active');
+  }
+});
+
+document.addEventListener('keydown', function (evt) {
+  var activeAdCard = map.querySelector('.active');
+  if (evt.keyCode === 27 && activeAdCard) {
+    activeAdCard.classList.remove('active');
+    activeAdCard.classList.add('hidden');
+  }
+});
+
+/* Вешаем обработчик на mouse up*/
+mainPin.addEventListener('mouseup', function () {
+  adForm.classList.remove('ad-form--disabled');
+  map.classList.remove('map--faded');
+  mapOverlay.style.zIndex = '0';
+  Array.prototype.forEach.call(adFormFieldsets, function (elem) {
+    elem.disabled = false;
+  });
+  mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + 22);
+  calculateAddress(mainPinLeft, mainPinTop);
+});
