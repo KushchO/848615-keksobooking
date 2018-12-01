@@ -258,3 +258,131 @@ mainPin.addEventListener('mouseup', function () {
   mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + 22);
   calculateAddress(mainPinLeft, mainPinTop);
 });
+
+/* Валидация формы */
+/* Добавляем нужные тэги и определяем переменные формы */
+var validateForm = function () {
+  var form = document.querySelector('.ad-form');
+  var formTitle = form.querySelector('#title');
+  var formPrice = form.querySelector('#price');
+  var formType = form.querySelector('#type');
+  var formRoomNumber = form.querySelector('#room_number');
+  var formGuestNumber = form.querySelector('#capacity');
+  var formTimeIn = form.querySelector('#timein');
+  var formTimeOut = form.querySelector('#timeout');
+
+  formTitle.required = true;
+  formTitle.min = 30;
+  formTitle.max = 100;
+
+  formPrice.required = true;
+  formPrice.type = 'number';
+  formPrice.max = 1000000;
+  formPrice.min = 0;
+  formPrice.value = 0;
+
+  var setFormTypePresets = function () {
+    if (formType.value === 'flat') {
+      formPrice.min = 1000;
+    }
+
+    if (formType.value === 'house') {
+      formPrice.min = 5000;
+    }
+
+    if (formType.value === 'palace') {
+      formPrice.min = 10000;
+    }
+
+    if (formType.value === 'bungalo') {
+      formPrice.min = 0;
+    }
+  };
+
+  setFormTypePresets();
+
+  formType.addEventListener('input', function () {
+    setFormTypePresets();
+  });
+
+  var setGuestCapacity = function () {
+    if (formRoomNumber.value === '1') {
+      formGuestNumber.value = '1';
+    }
+    if (formRoomNumber.value === '2') {
+      formGuestNumber.value = '2';
+    }
+    if (formRoomNumber.value === '3') {
+      formGuestNumber.value = '3';
+    }
+    if (formRoomNumber.value === '100') {
+      formGuestNumber.value = '0';
+    }
+  };
+
+  setGuestCapacity();
+
+  formRoomNumber.addEventListener('input', function () {
+    setGuestCapacity();
+  });
+
+  formGuestNumber.addEventListener('input', function () {
+    if (formRoomNumber.value === '1') {
+      if (formGuestNumber.value !== '1') {
+        formGuestNumber.setCustomValidity('В одной комнате может проживать только один гость');
+      } else {
+        formGuestNumber.setCustomValidity('');
+      }
+    }
+    if (formRoomNumber.value === '2') {
+      if (formGuestNumber.value === '3' || formGuestNumber.value === '0') {
+        formGuestNumber.setCustomValidity('Две комнаты расчитаны для одного или двух гостей');
+      } else {
+        formGuestNumber.setCustomValidity('');
+      }
+    }
+    if (formRoomNumber.value === '3') {
+      if (formGuestNumber.value === '0') {
+        formGuestNumber.setCustomValidity('В трех комнтах могут проживать от 1 до 3 гостей');
+      } else {
+        formGuestNumber.setCustomValidity('');
+      }
+    }
+    if (formRoomNumber.value === '100') {
+      if (formGuestNumber.value !== '0') {
+        formGuestNumber.setCustomValidity('100 не для гостей');
+      } else {
+        formGuestNumber.setCustomValidity('');
+      }
+    }
+  });
+
+  formTimeIn.addEventListener('input', function () {
+    if (formTimeIn.value === '12:00') {
+      formTimeOut.value = '12:00';
+    }
+    if (formTimeIn.value === '13:00') {
+      formTimeOut.value = '13:00';
+    }
+    if (formTimeIn.value === '14:00') {
+      formTimeOut.value = '14:00';
+    }
+  });
+
+  formTimeOut.addEventListener('input', function () {
+    if (formTimeOut.value === '12:00') {
+      formTimeIn.value = '12:00';
+    }
+    if (formTimeOut.value === '13:00') {
+      formTimeIn.value = '13:00';
+    }
+    if (formTimeOut.value === '14:00') {
+      formTimeIn.value = '14:00';
+    }
+  });
+
+};
+
+validateForm();
+
+
