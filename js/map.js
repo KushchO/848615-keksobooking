@@ -387,18 +387,23 @@ mainPin.addEventListener('mousedown', function (evt) {
     x: evt.clientX,
     y: evt.clientY
   };
-  enablePage();
 
-  var onMouseMove = function (moveEvt) {
-    moveEvt.preventDefault();
+  var firstMovement = false;
+
+  var onMouseMove = function (e) {
+    e.preventDefault();
+    if (!firstMovement) {
+      firstMovement = true;
+      enablePage();
+    }
     var shift = {
-      x: startCoordinats.x - moveEvt.clientX,
-      y: startCoordinats.y - moveEvt.clientY
+      x: startCoordinats.x - e.clientX,
+      y: startCoordinats.y - e.clientY
     };
 
     startCoordinats = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
+      x: e.clientX,
+      y: e.clientY
     };
     var mainPinY = mainPin.offsetTop - shift.y;
     var mainPinX = mainPin.offsetLeft - shift.x;
@@ -413,8 +418,8 @@ mainPin.addEventListener('mousedown', function (evt) {
     calculateAddress();
   };
 
-  var onMouseUp = function (upEvt) {
-    upEvt.preventDefault();
+  var onMouseUp = function (e) {
+    e.preventDefault();
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
     calculateAddress();
