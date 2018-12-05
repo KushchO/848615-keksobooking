@@ -235,7 +235,7 @@ map.addEventListener('click', function (evt) {
   var target = evt.target;
   if (target.className === 'popup__close') {
     target.parentNode.classList.add('hidden');
-    target.parentNode.classList.remove('hidden active');
+    target.parentNode.classList.remove('active');
   }
 });
 
@@ -327,34 +327,34 @@ var validateForm = function () {
   });
 
   formGuestNumber.addEventListener('input', function () {
-    if (formRoomNumber.value === '1') {
-      if (formGuestNumber.value !== '1') {
-        formGuestNumber.setCustomValidity('В одной комнате может проживать только один гость');
-      } else {
-        formGuestNumber.setCustomValidity('');
-      }
+    var validateInfo = '';
+    switch (formRoomNumber.value) {
+      case '1':
+        if (formGuestNumber.value !== '1') {
+          validateInfo = 'В одной комнате может проживать только один гость';
+          formGuestNumber.setCustomValidity('validateInfo');
+        }
+        break;
+      case '2':
+        if (formGuestNumber.value === '3' || formGuestNumber.value === '0') {
+          validateInfo = 'Две комнаты расчитаны для одного или двух гостей';
+          formGuestNumber.setCustomValidity('validateInfo');
+        }
+        break;
+      case '3':
+        if (formGuestNumber.value === '0') {
+          validateInfo = 'В трех комнтах могут проживать от 1 до 3 гостей';
+          formGuestNumber.setCustomValidity('validateInfo');
+        }
+        break;
+      case '100':
+        if (formGuestNumber.value !== '0') {
+          validateInfo = '100 не для гостей';
+          formGuestNumber.setCustomValidity('validateInfo');
+        }
+        break;
     }
-    if (formRoomNumber.value === '2') {
-      if (formGuestNumber.value === '3' || formGuestNumber.value === '0') {
-        formGuestNumber.setCustomValidity('Две комнаты расчитаны для одного или двух гостей');
-      } else {
-        formGuestNumber.setCustomValidity('');
-      }
-    }
-    if (formRoomNumber.value === '3') {
-      if (formGuestNumber.value === '0') {
-        formGuestNumber.setCustomValidity('В трех комнтах могут проживать от 1 до 3 гостей');
-      } else {
-        formGuestNumber.setCustomValidity('');
-      }
-    }
-    if (formRoomNumber.value === '100') {
-      if (formGuestNumber.value !== '0') {
-        formGuestNumber.setCustomValidity('100 не для гостей');
-      } else {
-        formGuestNumber.setCustomValidity('');
-      }
-    }
+    formGuestNumber.setCustomValidity(validateInfo);
   });
 
   formTimeIn.addEventListener('input', function () {
