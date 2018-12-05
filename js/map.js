@@ -48,7 +48,7 @@ var generateArryasForadObject = function () {
     }
     AuthorList.push('img/avatars/user' + authorId + '.png');
     /* Генерируем массив коородинат локаций и заполняем массив адресов */
-    var addressX = getRandomInRange(25, map.offsetWidth - 25);
+    var addressX = getRandomInRange(25, map.offsetWidth - 50);
     var addressY = getRandomInRange(130, 630);
     var address = addressX + ', ' + addressY;
     locationListX.push(addressX);
@@ -206,12 +206,20 @@ mainPin.style.zIndex = '15';
 /* Определяем начальный адрес метки */
 map.position = 'relative';
 adFormAddress.disabled = true;
-var calculateAddress = function (left, top) {
-  adFormAddress.placeholder = left + ', ' + top;
+var calculateAddress = function () {
+  var mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + 22);
+  var mainPinLeft = Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2);
+  adFormAddress.placeholder = mainPinLeft + ', ' + mainPinTop;
 };
-var mainPinLeft = Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2);
-var mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight / 2);
-calculateAddress(mainPinLeft, mainPinTop);
+
+var enablePage = function () {
+  adForm.classList.remove('ad-form--disabled');
+  map.classList.remove('map--faded');
+  mapOverlay.style.zIndex = '0';
+  Array.prototype.forEach.call(adFormFieldsets, function (elem) {
+    elem.disabled = false;
+  });
+};
 
 /* Добовляем обработчики на метки и карточку */
 
@@ -245,18 +253,6 @@ document.addEventListener('keydown', function (evt) {
     activeAdCard.classList.remove('active');
     activeAdCard.classList.add('hidden');
   }
-});
-
-/* Вешаем обработчик на mouse up*/
-mainPin.addEventListener('mouseup', function () {
-  adForm.classList.remove('ad-form--disabled');
-  map.classList.remove('map--faded');
-  mapOverlay.style.zIndex = '0';
-  Array.prototype.forEach.call(adFormFieldsets, function (elem) {
-    elem.disabled = false;
-  });
-  mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + 22);
-  calculateAddress(mainPinLeft, mainPinTop);
 });
 
 /* Валидация формы */
@@ -385,4 +381,51 @@ var validateForm = function () {
 
 validateForm();
 
+/* Реализум Drag&Drop */
+mainPin.addEventListener('mousedown', function (evt) {
+  var startCoordinats = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var firstMovement = false;
+
+  var onMouseMove = function (e) {
+    e.preventDefault();
+    if (!firstMovement) {
+      firstMovement = true;
+      enablePage();
+    }
+    var shift = {
+      x: startCoordinats.x - e.clientX,
+      y: startCoordinats.y - e.clientY
+    };
+
+    startCoordinats = {
+      x: e.clientX,
+      y: e.clientY
+    };
+    var mainPinY = mainPin.offsetTop - shift.y;
+    var mainPinX = mainPin.offsetLeft - shift.x;
+    if (!(mainPinX < 0) && !(mainPinX > map.offsetWidth - mainPin.offsetWidth)) {
+      mainPin.style.left = (mainPinX) + 'px';
+    }
+    if (!(mainPinY < 130) && !(mainPinY > 630)) {
+      mainPin.style.top = (mainPinY) + 'px';
+    }
+
+
+    calculateAddress();
+  };
+
+  var onMouseUp = function (e) {
+    e.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    calculateAddress();
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
 
