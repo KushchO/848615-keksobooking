@@ -8,19 +8,19 @@
       var pinImg = document.createElement('img');
       /* Генерим button */
       pin.classList.add('map__pin');
-      pin.style = 'left: ' + (window.generateArryas.locationListX[i] + 25) + 'px; top: ' + (window.generateArryas.locationListY[i]) + 'px';
+      pin.style = 'left: ' + (window.data.locationListX[i] + 25) + 'px; top: ' + (window.data.locationListY[i]) + 'px';
       pin.setAttribute('type', 'button');
       /* Генерим img */
-      pinImg.src = window.generateArryas.adArray[i].author.avatar;
-      pinImg.alt = window.generateArryas.adArray[i].offer.title;
+      pinImg.src = window.data.adArray[i].author.avatar;
+      pinImg.alt = window.data.adArray[i].offer.title;
       pinImg.draggable = false;
       pinImg.width = 40;
       pinImg.height = 40;
       pin.appendChild(pinImg);
-      window.variables.fragment.appendChild(pin);
+      window.cards.fragment.appendChild(pin);
     }
   };
   generatePins();
-  window.variables.pinBlock.appendChild(window.variables.fragment);
-  window.generatePins.adCards = document.querySelectorAll('.map__card');
+  var pinBlock = document.querySelector('.map__pins');
+  pinBlock.appendChild(window.cards.fragment);
 })();
