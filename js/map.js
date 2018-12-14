@@ -11,6 +11,7 @@
   var mapFilters = document.querySelector('.map__filters-container');
   map.insertBefore(window.cards.fragmentCards, mapFilters);
   var adCards = document.querySelectorAll('.map__card');
+  console.dir(window.cards.fragmentCards);
   mainPin.addEventListener('mousedown', function (evt) {
     var startCoordinats = {
       x: evt.clientX,

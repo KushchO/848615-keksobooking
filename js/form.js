@@ -1,8 +1,9 @@
 'use strict';
 
 (function () {
+  var form = document.querySelector('.ad-form');
   var validateForm = function () {
-    var form = document.querySelector('.ad-form');
+    window.form = form;
     var formTitle = form.querySelector('#title');
     var formPrice = form.querySelector('#price');
     var formType = form.querySelector('#type');
@@ -106,6 +107,27 @@
         formTimeIn.value = '14:00';
       }
     });
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+
+      var adFormData = new FormData(window.form);
+      window.send(adFormData, resetForm, window.errorHandler);
+    });
+  };
+
+  var main = document.querySelector('main');
+  var promo = document.querySelector('.promo');
+
+  var resetForm = function () {
+    var success = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+    main.insertBefore(success, promo);
+    form.reset();
+  };
+
+  window.errorHandler = function (errorText) {
+    var error = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    error.querySelector('.error__message').textContent = errorText;
+    main.insertBefore(error, promo);
   };
   validateForm();
 })();
