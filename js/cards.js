@@ -3,17 +3,8 @@
 (function () {
   window.cards = {};
   var fragment = document.createDocumentFragment();
-  window.cards.fragment = fragment;
-  var fragmentCards = document.createDocumentFragment();
-  window.cards.fragmentCards = fragmentCards;
-  var creatCardsList = function (array) {
-    var adArrayList = array;
-    for (var i = 0; i < adArrayList.length; i++) {
-      fragmentCards.appendChild(generateAd(i, adArrayList));
-    }
-  };
-  window.load(creatCardsList, window.errorHandler);
-  var generateAd = function (adNum, adArray) {
+
+  window.cards.generateAd = function (adNum, adArray) {
     var ad = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
     ad.querySelector('.popup__title').textContent = adArray[adNum].offer.title;
     ad.querySelector('.popup__text--address').textContent = adArray[adNum].offer.address;
@@ -42,11 +33,19 @@
     var adFeatures = ad.querySelector('.popup__features');
     for (var i = 0; i < adArray[adNum].offer.features.length; i++) {
       var featureEl = window.utility.createElement('li', ['popup__feature', 'popup__feature--' + adArray[adNum].offer.features[i]]);
-      window.cards.fragment.appendChild(featureEl);
+      fragment.appendChild(featureEl);
     }
-    adFeatures.appendChild(window.cards.fragment);
+    adFeatures.appendChild(fragment);
+    if (adFeatures.children.length === 0) {
+      adFeatures.classList.add('hidden');
+    }
     ad.querySelector('.popup__description').textContent = adArray[adNum].offer.description;
     var adPhotos = ad.querySelector('.popup__photos');
+
+    if (adArray[adNum].offer.photos.length === 0) {
+      adPhotos.style.display = 'none';
+    }
+
     for (i = 0; i < adArray[adNum].offer.photos.length; i++) {
       var photoEl;
       if (i === adArray[adNum].offer.photos.length - 1) {
@@ -54,10 +53,13 @@
       } else {
         photoEl = ad.querySelector('.popup__photo').cloneNode(true);
       }
+
+
       photoEl.src = adArray[adNum].offer.photos[i];
       fragment.appendChild(photoEl);
     }
-    adPhotos.appendChild(window.cards.fragment);
+    adPhotos.appendChild(fragment);
+
     ad.querySelector('.popup__avatar').src = adArray[adNum].author.avatar;
     return ad;
   };

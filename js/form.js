@@ -6,14 +6,16 @@
     window.form = form;
     var formTitle = form.querySelector('#title');
     var formPrice = form.querySelector('#price');
+    var formAddress = form.querySelector('#address');
     var formType = form.querySelector('#type');
     var formRoomNumber = form.querySelector('#room_number');
     var formGuestNumber = form.querySelector('#capacity');
     var formTimeIn = form.querySelector('#timein');
     var formTimeOut = form.querySelector('#timeout');
     formTitle.required = true;
-    formTitle.min = 30;
-    formTitle.max = 100;
+    formAddress.required = true;
+    formTitle.minLength = 30;
+    formTitle.maxLength = 100;
     formPrice.required = true;
     formPrice.type = 'number';
     formPrice.max = 1000000;
@@ -61,25 +63,25 @@
         case '1':
           if (formGuestNumber.value !== '1') {
             validateInfo = 'В одной комнате может проживать только один гость';
-            formGuestNumber.setCustomValidity('validateInfo');
+            formGuestNumber.setCustomValidity(validateInfo);
           }
           break;
         case '2':
           if (formGuestNumber.value === '3' || formGuestNumber.value === '0') {
             validateInfo = 'Две комнаты расчитаны для одного или двух гостей';
-            formGuestNumber.setCustomValidity('validateInfo');
+            formGuestNumber.setCustomValidity(validateInfo);
           }
           break;
         case '3':
           if (formGuestNumber.value === '0') {
             validateInfo = 'В трех комнтах могут проживать от 1 до 3 гостей';
-            formGuestNumber.setCustomValidity('validateInfo');
+            formGuestNumber.setCustomValidity(validateInfo);
           }
           break;
         case '100':
           if (formGuestNumber.value !== '0') {
             validateInfo = '100 не для гостей';
-            formGuestNumber.setCustomValidity('validateInfo');
+            formGuestNumber.setCustomValidity(validateInfo);
           }
           break;
       }
@@ -109,7 +111,7 @@
     });
     form.addEventListener('submit', function (evt) {
       evt.preventDefault();
-
+      formAddress.disabled = false;
       var adFormData = new FormData(window.form);
       window.send(adFormData, resetForm, window.errorHandler);
     });
@@ -122,6 +124,10 @@
     var success = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
     main.insertBefore(success, promo);
     form.reset();
+    setTimeout(function () {
+      main.removeChild(success);
+    }, 2000);
+    window.map.calculateAddress();
   };
 
   window.errorHandler = function (errorText) {
