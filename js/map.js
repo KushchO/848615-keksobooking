@@ -16,11 +16,11 @@
       x: evt.clientX,
       y: evt.clientY
     };
-    var firstMovement = false;
+    var firstMovement = true;
     var onMouseMove = function (e) {
       e.preventDefault();
-      if (!firstMovement) {
-        firstMovement = true;
+      if (firstMovement) {
+        firstMovement = false;
         enablePage();
       }
       var shift = {
