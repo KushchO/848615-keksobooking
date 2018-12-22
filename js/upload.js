@@ -6,52 +6,101 @@
 
   /* Загружаем фото объявления */
 
-  var imageLoadHandler = function (maxImages, loader, targetBlock, targetImage) {
-    var file = loader.files[0];
-    if (file) {
-      var fileName = file.name.toLowerCase();
+  var loadImages = function (file, maxImages, targetBlock, evt, targetImage) {
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
 
-      var matches = FILE_TYPES.some(function (it) {
-        return fileName.endsWith(it);
-      });
-
-      if (matches) {
-        var reader = new FileReader();
-        reader.addEventListener('load', function () {
-          if (maxImages === 1 && targetImage) {
-            targetImage.src = reader.result;
-          }
-          if (maxImages > 1) {
-            var NumberOfImages = targetBlock.querySelectorAll('img').length;
-            if (NumberOfImages < maxImages) {
-              targetBlock.style.display = 'flex';
+    if (matches) {
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        if (maxImages === 1 && targetImage) {
+          targetImage.src = reader.result;
+        }
+        if (maxImages > 1) {
+          var NumberOfImages = document.querySelectorAll('.ad-form__photo').length;
+          var uploadContainer = document.querySelector('.ad-form__photo-container');
+          if (NumberOfImages < maxImages) {
+            if (!targetBlock.querySelector('img')) {
+              targetBlock.style.padding = 15 + 'px';
               var adPhoto = document.createElement('img');
               adPhoto.alt = 'Фото объявления';
               adPhoto.src = reader.result;
-              adPhoto.style.width = 30 + 'px';
-              adPhoto.style.height = 30 + 'px';
+              adPhoto.style.width = 40 + 'px';
+              adPhoto.style.height = 44 + 'px';
               targetBlock.appendChild(adPhoto);
-            } else {
-              loader.setCustomValidity('Вы загрузили максимальное количество изображений');
+              return;
+            }
+            if (targetBlock.querySelector('img')) {
+              var imageBlock = targetBlock.cloneNode(true);
+              var image = imageBlock.querySelector('img');
+              image.src = reader.result;
+              uploadContainer.appendChild(imageBlock);
             }
           }
-        });
+          if (NumberOfImages === maxImages && !uploadContainer.querySelector('p')) {
+            var message = document.createElement('p');
+            message.textContent = 'Вы можете загрузить не более 10 фото.';
+            message.style.color = 'red';
+            uploadContainer.appendChild(message);
+          }
+        }
+      });
 
-        reader.readAsDataURL(file);
-      }
+      reader.readAsDataURL(file);
     }
+  };
+
+  var imageLoadHandler = function (maxImages, loader, targetBlock, evt, targetImage) {
+    if (loader.files) {
+      var file = loader.files[0];
+      loadImages(file, maxImages, targetBlock, evt, targetImage);
+    } else
+    if (evt.dataTransfer.files) {
+      var droppedFile = evt.dataTransfer.files[0];
+      loadImages(droppedFile, maxImages, targetBlock, evt, targetImage);
+    }
+  };
+
+  var preventDefaultActions = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
   };
 
   var avatarUploader = document.querySelector('.ad-form-header__input');
   var avatar = document.querySelector('.ad-form-header__preview img');
 
-  avatarUploader.addEventListener('input', function () {
-    imageLoadHandler(1, avatarUploader, false, avatar);
+  avatarUploader.addEventListener('input', function (evt) {
+    imageLoadHandler(1, avatarUploader, false, evt, avatar);
   });
 
   var adImagesUploader = document.querySelector('.ad-form__input');
   var adImagesBlock = document.querySelector('.ad-form__photo');
-  adImagesUploader.addEventListener('change', function () {
-    imageLoadHandler(2, adImagesUploader, adImagesBlock);
+
+  adImagesUploader.addEventListener('input', function (evt) {
+    imageLoadHandler(10, adImagesUploader, adImagesBlock, evt);
   });
+
+  var imagesDropBlock = document.querySelector('.ad-form__drop-zone');
+
+  imagesDropBlock.addEventListener('dragover', function (evt) {
+    preventDefaultActions(evt);
+  });
+  imagesDropBlock.addEventListener('drop', function (evt) {
+    preventDefaultActions(evt);
+    imageLoadHandler(10, imagesDropBlock, adImagesBlock, evt);
+  });
+
+  var avatarDropBlock = document.querySelector('.ad-form-header__drop-zone');
+
+  avatarDropBlock.addEventListener('dragover', function (evt) {
+    preventDefaultActions(evt);
+  });
+
+  avatarDropBlock.addEventListener('drop', function (evt) {
+    preventDefaultActions(evt);
+    imageLoadHandler(1, avatarDropBlock, false, evt, avatar);
+  });
+
 })();
