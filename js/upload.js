@@ -1,10 +1,7 @@
 'use strict';
 
 (function () {
-  /* Загружаем аватар */
   var FILE_TYPES = ['jpg', 'jpeg', 'png'];
-
-  /* Загружаем фото объявления */
 
   var loadImages = function (file, maxImages, targetBlock, evt, targetImage) {
     var fileName = file.name.toLowerCase();

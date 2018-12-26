@@ -6,13 +6,12 @@
   var pinBlock = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters-container');
   window.render.renderPins = function (adArray) {
-    var pinsNumber = adArray.length > 5 ? 5 : adArray.length;
     if (start) {
       start = false;
-      pinBlock.appendChild(window.pins.generatePins(adArray, pinsNumber));
-      window.map.map.insertBefore(window.cards.generateAd(adArray, pinsNumber), mapFilters);
+      pinBlock.appendChild(window.generatePins(adArray));
+      window.map.map.insertBefore(window.renderCards(adArray), mapFilters);
       bindPinsAndCards();
-      window.sort.sortData(adArray);
+      window.filter.filterData(adArray);
     } else {
       var pins = window.map.map.querySelectorAll('.map__pin');
       pins.forEach(function (item) {
@@ -25,8 +24,8 @@
       cards.forEach(function (item) {
         window.map.map.removeChild(item);
       });
-      pinBlock.appendChild(window.pins.generatePins(adArray, pinsNumber));
-      window.map.map.insertBefore(window.cards.generateAd(adArray, pinsNumber), mapFilters);
+      pinBlock.appendChild(window.generatePins(adArray));
+      window.map.map.insertBefore(window.renderCards(adArray), mapFilters);
       bindPinsAndCards();
     }
     return adArray;
