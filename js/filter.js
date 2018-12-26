@@ -87,9 +87,9 @@
     return cropArray(filteredPins);
   };
 
-  var cropArray = function (anyArray) {
-    if (anyArray.length > 5) {
-      anyArray.length = 5;
+  window.filter.cropArray = function (anyArray, number) {
+    if (anyArray.length > number) {
+      anyArray.length = number;
       return anyArray;
     }
     return anyArray;

@@ -5,9 +5,11 @@
   var start = true;
   var pinBlock = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters-container');
+  var MAX_NUMPER_OF_PINS = 5;
   window.render.renderPins = function (adArray) {
     if (start) {
       start = false;
+      adArray = window.filter.cropArray(adArray, MAX_NUMPER_OF_PINS)
       pinBlock.appendChild(window.generatePins(adArray));
       window.map.map.insertBefore(window.renderCards(adArray), mapFilters);
       bindPinsAndCards();
