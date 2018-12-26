@@ -3,10 +3,8 @@
 (function () {
   window.filter = {};
 
-  var adFiltersform = document.querySelector('.map__filters');
   var filterForm = document.querySelector('.map__filters');
-
-  var checkboxes = Array.from(adFiltersform.querySelectorAll('[type=checkbox]'));
+  var checkboxes = Array.from(filterForm.querySelectorAll('[type=checkbox]'));
 
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
@@ -72,25 +70,18 @@
   };
 
   var filteringData = function (adArray) {
-    console.log(adArray);
     var requiredFeatures = checkboxes.filter(function (item) {
       return item.checked;
     });
-    console.log(requiredFeatures);
 
     var filteredPins = adArray.filter(function (item) {
-      console.log(selectType(item));
-      console.log(selectPrice(item));
-      console.log(selectRooms(item));
-      console.log(selectGuests(item));
-      console.log(selectFeatures(requiredFeatures, item));
       return selectType(item) &&
              selectPrice(item) &&
              selectRooms(item) &&
              selectGuests(item) &&
              selectFeatures(requiredFeatures, item);
     });
-    console.log(filteredPins);
+
     return window.filter.cropArray(filteredPins, window.filter.MAX_NUMPER_OF_PINS);
   };
 
