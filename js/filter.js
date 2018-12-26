@@ -5,15 +5,15 @@
 
   var adFiltersform = document.querySelector('.map__filters');
   var filterForm = document.querySelector('.map__filters');
-  var adFilters = filterForm.querySelectorAll('select, input');
 
   var checkboxes = Array.from(adFiltersform.querySelectorAll('[type=checkbox]'));
-
 
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
   var roomSelect = document.querySelector('#housing-rooms');
   var guestSelect = document.querySelector('#housing-guests');
+
+  window.filter.MAX_NUMPER_OF_PINS = 5;
 
   var selectType = function (ad) {
     switch (typeSelect.value) {
@@ -28,7 +28,7 @@
   var MAX_PRICE_VALUE = 50000;
 
   var selectPrice = function (ad) {
-    switch (priceSelect) {
+    switch (priceSelect.value) {
       case 'any':
         return true;
 
@@ -53,7 +53,7 @@
     }
   };
   var selectGuests = function (ad) {
-    switch (guestSelect) {
+    switch (guestSelect.value) {
       case 'any':
         return true;
 
@@ -63,28 +63,35 @@
   };
 
   var selectFeatures = function (features, ad) {
-    return function () {
+    if (features.length) {
       return features.every(function (feature) {
-        console.log(ad.offer.features.include(feature));
         return ad.offer.features.include(feature);
       });
-    };
+    }
+    return true;
   };
 
   var filteringData = function (adArray) {
+    console.log(adArray);
     var requiredFeatures = checkboxes.filter(function (item) {
       return item.checked;
     });
+    console.log(requiredFeatures);
 
     var filteredPins = adArray.filter(function (item) {
+      console.log(selectType(item));
+      console.log(selectPrice(item));
+      console.log(selectRooms(item));
+      console.log(selectGuests(item));
+      console.log(selectFeatures(requiredFeatures, item));
       return selectType(item) &&
              selectPrice(item) &&
              selectRooms(item) &&
              selectGuests(item) &&
              selectFeatures(requiredFeatures, item);
     });
-
-    return cropArray(filteredPins);
+    console.log(filteredPins);
+    return window.filter.cropArray(filteredPins, window.filter.MAX_NUMPER_OF_PINS);
   };
 
   window.filter.cropArray = function (anyArray, number) {
@@ -92,6 +99,7 @@
       anyArray.length = number;
       return anyArray;
     }
+
     return anyArray;
   };
 
@@ -106,9 +114,7 @@
   };
 
   window.filter.filterData = function (adArray) {
-    adFilters.forEach(function (filter) {
-      filter.addEventListener('change', filterHandler(adArray));
-    });
+    filterForm.addEventListener('change', filterHandler(adArray));
   };
 
   // window.sort = {};
