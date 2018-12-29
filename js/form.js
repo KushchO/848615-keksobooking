@@ -14,6 +14,11 @@
     formTitle.required = true;
     var fistTimePriceFlag = true;
 
+    var MIN_TITLE_SIZE = 30;
+    var MAX_TITLE_SIZE = 100;
+    var FLAT_MIN_PRICE = 1000;
+    var SHOW_FORM_SEND_RESULT_PAUSE = 2000;
+
     var HouseTypePrice = {
       flat: 1000,
       bungalo: 0,
@@ -22,8 +27,8 @@
     };
 
     var titleChangeHandler = function () {
-      formTitle.minLength = 30;
-      formTitle.maxLength = 100;
+      formTitle.minLength = MIN_TITLE_SIZE;
+      formTitle.maxLength = MAX_TITLE_SIZE;
     };
 
     var typeChangeHandler = function (evt) {
@@ -47,7 +52,7 @@
     };
 
     var setMinPrice = function (evt) {
-      formHousePrice.min = 1000;
+      formHousePrice.min = FLAT_MIN_PRICE;
       if (fistTimePriceFlag) {
         fistTimePriceFlag = false;
         formHousePrice.value = HouseTypePrice[formHouseType.value];
@@ -100,7 +105,7 @@
       form.reset();
       setTimeout(function () {
         main.removeChild(success);
-      }, 2000);
+      }, SHOW_FORM_SEND_RESULT_PAUSE);
       window.map.calculateAddress();
     };
 

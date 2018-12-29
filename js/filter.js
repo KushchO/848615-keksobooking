@@ -24,6 +24,7 @@
 
   var MIN_PRICE_VALUE = 10000;
   var MAX_PRICE_VALUE = 50000;
+  var DEBOUNCE_PAUSE = 700;
 
   var selectPrice = function (ad) {
     switch (priceSelect.value) {
@@ -63,18 +64,17 @@
   var selectFeatures = function (features, ad) {
     if (features.length) {
       return features.every(function (feature) {
-        return ad.offer.features.include(feature);
+        return ad.offer.features.includes(feature.value);
       });
     }
     return true;
   };
 
-  var filteringData = function (adArray) {
+  var filteringData = function (advertisements) {
     var requiredFeatures = checkboxes.filter(function (item) {
       return item.checked;
     });
-
-    var filteredPins = adArray.filter(function (item) {
+    var filteredPins = advertisements.filter(function (item) {
       return selectType(item) &&
              selectPrice(item) &&
              selectRooms(item) &&
@@ -94,98 +94,20 @@
     return anyArray;
   };
 
-  var filterHandler = function (adArray) {
+  var filterHandler = function () {
+    var advertisements = window.map.advertisements.map(function (item) {
+      return item;
+    });
     var timerID;
     if (timerID) {
       clearTimeout(timerID);
     }
     timerID = window.setTimeout(function () {
-      window.render.renderPins(filteringData(adArray));
-    }, 700);
+      window.render.renderPins(filteringData(advertisements));
+    }, DEBOUNCE_PAUSE);
   };
 
-  window.filter.filterData = function (adArray) {
-    filterForm.addEventListener('change', filterHandler(adArray));
+  window.filter.filterData = function () {
+    filterForm.addEventListener('change', filterHandler);
   };
-
-  // window.sort = {};
-  // window.sort.sortData = function (adArray) {
-  //   var sortFormElements = document.querySelector('.map__filters').elements;
-  //   var sortForm = document.querySelector('.map__filters');
-  //   var sortFormList = {};
-  //   var filteredArray = [];
-
-  //   sortForm.addEventListener('change', function () {
-  //     filteredArray = adArray;
-  //     var features = [];
-  //     for (var i = 0; i < sortFormElements.length; i++) {
-  //       switch (sortFormElements[i].type) {
-  //         case 'checkbox':
-  //           if (sortFormElements[i].checked) {
-  //             features.push(sortFormElements[i].value);
-  //           }
-  //           break;
-  //         case 'select-one':
-  //           var name = sortFormElements[i].name.substring(sortFormElements[i].name.indexOf('-') + 1);
-  //           sortFormList[name] = sortFormElements[i].value;
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //     sortFormList.features = features;
-
-  //     var compareType = function (adVAlue, formVAlue, formKey) {
-  //       switch (formKey) {
-  //         case 'type':
-  //           if (formVAlue === 'any') {
-  //             return true;
-  //           }
-  //           return adVAlue.toString() === formVAlue.toString() ? true : false;
-  //         case 'guests':
-  //           if (formVAlue === 'any') {
-  //             return true;
-  //           }
-  //           return adVAlue.toString() === formVAlue.toString() ? true : false;
-  //         case 'rooms':
-  //           if (formVAlue === 'any') {
-  //             return true;
-  //           }
-  //           return adVAlue.toString() === formVAlue.toString() ? true : false;
-  //         case 'price':
-  //           if (formVAlue === 'any') {
-  //             return true;
-  //           }
-  //           switch (formVAlue) {
-  //             case 'low':
-  //               return adVAlue < 10000 && adVAlue >= 0 ? true : false;
-  //             case 'middle':
-  //               return adVAlue >= 10000 && adVAlue <= 50000 ? true : false;
-  //             case 'high':
-  //               return adVAlue > 50000 ? true : false;
-  //           }
-  //           return false;
-  //         case 'features':
-  //           if (formVAlue.length === 0) {
-  //             return true;
-  //           }
-  //           return formVAlue.every(function (item) {
-  //             return (adVAlue.indexOf(item) !== -1);
-  //           });
-  //         default:
-  //           return false;
-  //       }
-  //     };
-
-  //     for (var key in sortFormList) {
-  //       if (sortFormList.hasOwnProperty(key)) {
-  //         filteredArray = filteredArray.filter(function (item) {
-  //           return compareType(item.offer[key], sortFormList[key], key);
-  //         });
-  //       }
-  //     }
-
-
-  //   });
-  // };
 })();

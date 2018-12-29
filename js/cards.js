@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.renderCards = function (adArray) {
+  window.renderCards = function (advertisements) {
     var renderedCards = document.createDocumentFragment();
     var fragment = document.createDocumentFragment();
 
@@ -45,20 +45,20 @@
       return adPhotos.appendChild(fragment);
     };
 
-    for (var i = 0; i < adArray.length; i++) {
+    for (var i = 0; i < advertisements.length; i++) {
       var ad = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
-      ad.querySelector('.popup__title').textContent = adArray[i].offer.title;
-      ad.querySelector('.popup__text--address').textContent = adArray[i].offer.address;
-      ad.querySelector('.popup__text--price').textContent = adArray[i].offer.price + '₽/ночь';
-      ad.querySelector('.popup__type').textContent = setType(adArray[i]);
-      var roomString = window.utility.declOfNum(adArray[i].offer.rooms, [' комната', ' комнаты', ' комнат']);
-      var guestString = window.utility.declOfNum(adArray[i].offer.guests, [' гостя', ' гостей', ' гостей']);
-      ad.querySelector('.popup__text--capacity').textContent = adArray[i].offer.rooms + roomString + ' для ' + adArray[i].offer.guests + guestString;
-      ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + adArray[i].offer.checkin + ', выезд до ' + adArray[i].offer.checkout;
-      ad.querySelector('.popup__description').textContent = adArray[i].offer.description;
-      generateFeatures(adArray[i].offer.features, ad);
-      renderPhotos(adArray[i].offer.photos, ad);
-      ad.querySelector('.popup__avatar').src = adArray[i].author.avatar;
+      ad.querySelector('.popup__title').textContent = advertisements[i].offer.title;
+      ad.querySelector('.popup__text--address').textContent = advertisements[i].offer.address;
+      ad.querySelector('.popup__text--price').textContent = advertisements[i].offer.price + '₽/ночь';
+      ad.querySelector('.popup__type').textContent = setType(advertisements[i]);
+      var roomString = window.utility.declOfNum(advertisements[i].offer.rooms, [' комната', ' комнаты', ' комнат']);
+      var guestString = window.utility.declOfNum(advertisements[i].offer.guests, [' гостя', ' гостей', ' гостей']);
+      ad.querySelector('.popup__text--capacity').textContent = advertisements[i].offer.rooms + roomString + ' для ' + advertisements[i].offer.guests + guestString;
+      ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertisements[i].offer.checkin + ', выезд до ' + advertisements[i].offer.checkout;
+      ad.querySelector('.popup__description').textContent = advertisements[i].offer.description;
+      generateFeatures(advertisements[i].offer.features, ad);
+      renderPhotos(advertisements[i].offer.photos, ad);
+      ad.querySelector('.popup__avatar').src = advertisements[i].author.avatar;
       renderedCards.appendChild(ad);
     }
 
