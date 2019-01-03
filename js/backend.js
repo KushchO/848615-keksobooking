@@ -3,6 +3,7 @@
 (function () {
   var LOAD_FILE_TIMEOUT = 10000;
   var STATUS_OK = 200;
+
   window.load = function (onLoad, onError) {
     var url = 'https://js.dump.academy/keksobooking/data';
     var xhr = new XMLHttpRequest();

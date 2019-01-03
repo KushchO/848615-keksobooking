@@ -6,7 +6,7 @@
     var fragment = document.createDocumentFragment();
 
     var setType = function (ad) {
-      var TYPES = {
+      var Types = {
         palace: 'Дворец',
         flat: 'Квартира',
         house: 'Дом',
@@ -14,7 +14,7 @@
 
       };
 
-      return TYPES[ad.offer.type];
+      return Types[ad.offer.type];
     };
 
     var generateFeatures = function (features) {

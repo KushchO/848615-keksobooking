@@ -9,6 +9,8 @@
 
   window.map = {};
   window.map.map = document.querySelector('.map');
+  window.map.filterForm = document.querySelector('.map__filters');
+  var filterFormElements = window.map.filterForm.querySelectorAll('input, select');
   var mainPin = document.querySelector('.map__pin--main');
   var adFormAddress = document.querySelector('#address');
   var adForm = document.querySelector('.ad-form');
@@ -72,8 +74,11 @@
     elem.disabled = true;
   });
   window.map.mapOverlay.classList.add('map__overlay--start');
+  window.map.filterForm.disabled = true;
   window.map.map.position = 'relative';
-  adFormAddress.disabled = true;
+  filterFormElements.forEach(function (item) {
+    item.disabled = true;
+  });
   window.map.calculateAddress = function () {
     window.form.mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + PIN_HALF_HEIGHT);
     window.form.mainPinLeft = Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2);
@@ -84,6 +89,9 @@
     adForm.classList.remove('ad-form--disabled');
     window.map.map.classList.remove('map--faded');
     window.map.mapOverlay.classList.remove('map__overlay--start');
+    filterFormElements.forEach(function (item) {
+      item.disabled = false;
+    });
     Array.prototype.forEach.call(adFormFieldsets, function (elem) {
       elem.disabled = false;
     });

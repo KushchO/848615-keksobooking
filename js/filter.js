@@ -2,16 +2,17 @@
 
 (function () {
   window.filter = {};
+  window.filter.MAX_NUMPER_OF_PINS = 5;
+  var MIN_PRICE_VALUE = 10000;
+  var MAX_PRICE_VALUE = 50000;
+  var DEBOUNCE_PAUSE = 700;
 
-  var filterForm = document.querySelector('.map__filters');
-  var checkboxes = Array.from(filterForm.querySelectorAll('[type=checkbox]'));
+  var checkboxes = Array.from(window.map.filterForm.querySelectorAll('[type=checkbox]'));
 
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
   var roomSelect = document.querySelector('#housing-rooms');
   var guestSelect = document.querySelector('#housing-guests');
-
-  window.filter.MAX_NUMPER_OF_PINS = 5;
 
   var selectType = function (ad) {
     switch (typeSelect.value) {
@@ -21,10 +22,6 @@
         return ad.offer.type === typeSelect.value;
     }
   };
-
-  var MIN_PRICE_VALUE = 10000;
-  var MAX_PRICE_VALUE = 50000;
-  var DEBOUNCE_PAUSE = 700;
 
   var selectPrice = function (ad) {
     switch (priceSelect.value) {
@@ -108,6 +105,6 @@
   };
 
   window.filter.filterData = function () {
-    filterForm.addEventListener('change', filterHandler);
+    window.map.filterForm.addEventListener('change', filterHandler);
   };
 })();

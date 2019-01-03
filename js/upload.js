@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['jpg', 'jpeg', 'png'];
   var MAX_UPLOADED_IMAGES = 10;
   var MAX_AVATAR = 1;
+  var FileTypes = ['jpg', 'jpeg', 'png'];
 
   var loadImages = function (file, maxImages, targetBlock, evt, targetImage) {
     var fileName = file.name.toLowerCase();
-    var matches = FILE_TYPES.some(function (it) {
+    var matches = FileTypes.some(function (it) {
       return fileName.endsWith(it);
     });
 
