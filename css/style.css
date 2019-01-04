@@ -144,6 +144,10 @@ fieldset {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+.map__overlay--start {
+  z-index: 15;
+}
+
 .map__title {
   width: 100%;
   margin: 0;
@@ -176,6 +180,11 @@ fieldset {
 
   border: 0;
   background: none;
+}
+
+.map__pin img {
+  width: 40px;
+  height: 40px;
 }
 
 .map__pin:focus {
@@ -228,7 +237,12 @@ fieldset {
   height: 65px;
 
   cursor: move;
+
+  z-index: 15;
 }
+
+
+
 
 .map__pin--main img {
   position: relative;
@@ -814,6 +828,12 @@ fieldset {
 
   background-color: #e4e4de;
   border-radius: 5px;
+  padding: 15px;
+}
+
+.ad-form__photo-img {
+  width: 40px;
+  height: 44px;;
 }
 
 .ad-form__element--submit {

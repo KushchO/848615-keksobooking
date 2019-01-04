@@ -5,14 +5,14 @@
   var start = true;
   var pinBlock = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters-container');
-  window.render.renderPins = function (adArray) {
-    var pinsNumber = adArray.length > 5 ? 5 : adArray.length;
+  window.render.renderPins = function (advertisements) {
     if (start) {
       start = false;
-      pinBlock.appendChild(window.pins.generatePins(adArray, pinsNumber));
-      window.map.map.insertBefore(window.cards.generateAd(adArray, pinsNumber), mapFilters);
+      var cropedAdvertisements = window.filter.cropArray(advertisements, window.filter.MAX_NUMPER_OF_PINS);
+      pinBlock.appendChild(window.generatePins(cropedAdvertisements));
+      window.map.map.insertBefore(window.renderCards(cropedAdvertisements), mapFilters);
       bindPinsAndCards();
-      window.sort.sortData(adArray);
+      window.filter.filterData(advertisements);
     } else {
       var pins = window.map.map.querySelectorAll('.map__pin');
       pins.forEach(function (item) {
@@ -25,11 +25,11 @@
       cards.forEach(function (item) {
         window.map.map.removeChild(item);
       });
-      pinBlock.appendChild(window.pins.generatePins(adArray, pinsNumber));
-      window.map.map.insertBefore(window.cards.generateAd(adArray, pinsNumber), mapFilters);
+      pinBlock.appendChild(window.generatePins(advertisements));
+      window.map.map.insertBefore(window.renderCards(advertisements), mapFilters);
       bindPinsAndCards();
     }
-    return adArray;
+    return advertisements;
   };
 
   var bindPinsAndCards = function () {

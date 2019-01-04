@@ -1,21 +1,20 @@
 'use strict';
 
 (function () {
-  /* Загружаем аватар */
-  var FILE_TYPES = ['jpg', 'jpeg', 'png'];
-
-  /* Загружаем фото объявления */
+  var MAX_UPLOADED_IMAGES = 10;
+  var MAX_AVATAR = 1;
+  var FileTypes = ['jpg', 'jpeg', 'png'];
 
   var loadImages = function (file, maxImages, targetBlock, evt, targetImage) {
     var fileName = file.name.toLowerCase();
-    var matches = FILE_TYPES.some(function (it) {
+    var matches = FileTypes.some(function (it) {
       return fileName.endsWith(it);
     });
 
     if (matches) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
-        if (maxImages === 1 && targetImage) {
+        if (maxImages === MAX_AVATAR && targetImage) {
           targetImage.src = reader.result;
         }
         if (maxImages > 1) {
@@ -23,12 +22,10 @@
           var uploadContainer = document.querySelector('.ad-form__photo-container');
           if (NumberOfImages < maxImages) {
             if (!targetBlock.querySelector('img')) {
-              targetBlock.style.padding = 15 + 'px';
               var adPhoto = document.createElement('img');
               adPhoto.alt = 'Фото объявления';
               adPhoto.src = reader.result;
-              adPhoto.style.width = 40 + 'px';
-              adPhoto.style.height = 44 + 'px';
+              adPhoto.classList.add('ad-form__photo-img');
               targetBlock.appendChild(adPhoto);
               return;
             }
@@ -72,14 +69,14 @@
   var avatar = document.querySelector('.ad-form-header__preview img');
 
   avatarUploader.addEventListener('input', function (evt) {
-    imageLoadHandler(1, avatarUploader, false, evt, avatar);
+    imageLoadHandler(MAX_AVATAR, avatarUploader, false, evt, avatar);
   });
 
   var adImagesUploader = document.querySelector('.ad-form__input');
   var adImagesBlock = document.querySelector('.ad-form__photo');
 
   adImagesUploader.addEventListener('input', function (evt) {
-    imageLoadHandler(10, adImagesUploader, adImagesBlock, evt);
+    imageLoadHandler(MAX_UPLOADED_IMAGES, adImagesUploader, adImagesBlock, evt);
   });
 
   var imagesDropBlock = document.querySelector('.ad-form__drop-zone');
@@ -89,7 +86,7 @@
   });
   imagesDropBlock.addEventListener('drop', function (evt) {
     preventDefaultActions(evt);
-    imageLoadHandler(10, imagesDropBlock, adImagesBlock, evt);
+    imageLoadHandler(MAX_UPLOADED_IMAGES, imagesDropBlock, adImagesBlock, evt);
   });
 
   var avatarDropBlock = document.querySelector('.ad-form-header__drop-zone');
@@ -100,7 +97,7 @@
 
   avatarDropBlock.addEventListener('drop', function (evt) {
     preventDefaultActions(evt);
-    imageLoadHandler(1, avatarDropBlock, false, evt, avatar);
+    imageLoadHandler(MAX_AVATAR, avatarDropBlock, false, evt, avatar);
   });
 
 })();
