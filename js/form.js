@@ -9,9 +9,17 @@
   var NOT__FOR_GUESTS = 100;
   var DEFAULT_NUMBER_OF_GUESTS = 2;
   var SHOW_FORM_SEND_RESULT_PAUSE = 2000;
+  var DEFAULT_AVATAR_IMAGE = 'img/muffin-grey.svg';
 
-  var form = document.querySelector('.ad-form');
-  window.form = form;
+  var HouseTypePrice = {
+    FLAT: 1000,
+    BUNGALO: 0,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
+  var form = window.map.form;
+
   var validateForm = function () {
     var formTitle = form.querySelector('#title');
     var formHousePrice = form.querySelector('#price');
@@ -20,15 +28,10 @@
     var formRoomNumber = form.querySelector('#room_number');
     var formTimeIn = form.querySelector('#timein');
     var formTimeOut = form.querySelector('#timeout');
+    formAddress.readOnly = true;
     formTitle.required = true;
+    formHousePrice.required = true;
     var fistTimePriceFlag;
-
-    var HouseTypePrice = {
-      flat: 1000,
-      bungalo: 0,
-      house: 5000,
-      palace: 10000
-    };
 
     var titleChangeHandler = function () {
       formTitle.minLength = MIN_TITLE_SIZE;
@@ -59,10 +62,11 @@
       formHousePrice.min = FLAT_MIN_PRICE;
       if (fistTimePriceFlag) {
         fistTimePriceFlag = false;
-        formHousePrice.value = HouseTypePrice[formHouseType.value];
+        formHousePrice.placeholder = HouseTypePrice[formHouseType.value.toUpperCase()];
       }
       if (evt) {
         formHousePrice.min = HouseTypePrice[evt.target.value];
+        formHousePrice.placeholder = HouseTypePrice[evt.target.value.toUpperCase()];
       }
     };
 
@@ -80,17 +84,20 @@
         activateField(DEFAULT_NUMBER_OF_GUESTS, guestNumOptions);
         return;
       }
-      for (var i = 0; i < guestNumOptions.length; i++) {
-        if (guestNumOptions[i].value <= evt.target.value && +evt.target.value !== NOT__FOR_GUESTS && +guestNumOptions[i].value !== NO_GUESTS) {
-          guestNumOptions[i].disabled = false;
-          if (guestNumOptions[i].value === evt.target.value) {
-            guestNumOptions[i].selected = true;
+      var optionNumber = 0;
+      guestNumOptions.forEach(function (item) {
+        if (item.value <= evt.target.value && +evt.target.value !== NOT__FOR_GUESTS && +item.value !== NO_GUESTS) {
+          item.disabled = false;
+          if (item.value === evt.target.value) {
+            item.selected = true;
           }
         }
-        if (+guestNumOptions[i].value === NO_GUESTS && +evt.target.value === NOT__FOR_GUESTS) {
-          activateField(i, guestNumOptions);
+        if (+item.value === NO_GUESTS && +evt.target.value === NOT__FOR_GUESTS) {
+          activateField(optionNumber, guestNumOptions);
         }
-      }
+        optionNumber++;
+      });
+
     };
 
     var setFormDefault = function () {
@@ -110,23 +117,48 @@
     form.addEventListener('submit', function (evt) {
       evt.preventDefault();
       formAddress.disabled = false;
-      var adFormData = new FormData(window.form);
-      window.send(adFormData, resetForm, window.errorHandler);
+      var adFormData = new FormData(form);
+      window.send(adFormData, submitFormHandler, window.errorHandler);
     });
 
     var main = document.querySelector('main');
     var promo = document.querySelector('.promo');
 
-    var resetForm = function () {
+    var deleteUploadedImages = function () {
+      window.upload.avatar.src = DEFAULT_AVATAR_IMAGE;
+      var uploadedAdImages = form.querySelectorAll('.ad-form__photo');
+      if (uploadedAdImages.length !== 0) {
+        uploadedAdImages.forEach(function (item) {
+          window.upload.uploadContainer.removeChild(item);
+        });
+        var emptyadImagesBlock = window.upload.adImagesBlock.cloneNode();
+        window.upload.uploadContainer.appendChild(emptyadImagesBlock);
+
+      }
+    };
+
+    var submitFormHandler = function () {
       var success = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
       main.insertBefore(success, promo);
-      form.reset();
       setTimeout(function () {
         main.removeChild(success);
       }, SHOW_FORM_SEND_RESULT_PAUSE);
-      window.map.calculateAddress();
-      setFormDefault();
+      resetForm();
     };
+
+    var resetForm = function () {
+      form.reset();
+      window.map.disablePage();
+      setFormDefault();
+      deleteUploadedImages();
+      window.map.calculateAddress();
+    };
+
+    var resetFormButton = document.querySelector('.ad-form__reset');
+    resetFormButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      resetForm();
+    });
 
     window.errorHandler = function (errorText) {
       var error = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
@@ -136,7 +168,6 @@
       errorButton.addEventListener('click', function () {
         main.removeChild(error);
       });
-
     };
   };
   validateForm();

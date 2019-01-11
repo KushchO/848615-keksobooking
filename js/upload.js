@@ -3,11 +3,14 @@
 (function () {
   var MAX_UPLOADED_IMAGES = 10;
   var MAX_AVATAR = 1;
-  var FileTypes = ['jpg', 'jpeg', 'png'];
+  var fileTypes = ['jpg', 'jpeg', 'png'];
 
-  var loadImages = function (file, maxImages, targetBlock, evt, targetImage) {
+  window.upload = {};
+  window.upload.uploadContainer = document.querySelector('.ad-form__photo-container');
+
+  var loadImages = function (file, maxImages, targetBlock, targetImage) {
     var fileName = file.name.toLowerCase();
-    var matches = FileTypes.some(function (it) {
+    var matches = fileTypes.some(function (it) {
       return fileName.endsWith(it);
     });
 
@@ -19,7 +22,7 @@
         }
         if (maxImages > 1) {
           var NumberOfImages = document.querySelectorAll('.ad-form__photo').length;
-          var uploadContainer = document.querySelector('.ad-form__photo-container');
+
           if (NumberOfImages < maxImages) {
             if (!targetBlock.querySelector('img')) {
               var adPhoto = document.createElement('img');
@@ -33,14 +36,14 @@
               var imageBlock = targetBlock.cloneNode(true);
               var image = imageBlock.querySelector('img');
               image.src = reader.result;
-              uploadContainer.appendChild(imageBlock);
+              window.upload.uploadContainer.appendChild(imageBlock);
             }
           }
-          if (NumberOfImages === maxImages && !uploadContainer.querySelector('p')) {
+          if (NumberOfImages === maxImages && !window.upload.uploadContainer.querySelector('p')) {
             var message = document.createElement('p');
             message.textContent = 'Вы можете загрузить не более 10 фото.';
             message.style.color = 'red';
-            uploadContainer.appendChild(message);
+            window.upload.uploadContainer.appendChild(message);
           }
         }
       });
@@ -52,11 +55,11 @@
   var imageLoadHandler = function (maxImages, loader, targetBlock, evt, targetImage) {
     if (loader.files) {
       var file = loader.files[0];
-      loadImages(file, maxImages, targetBlock, evt, targetImage);
+      loadImages(file, maxImages, targetBlock, targetImage);
     } else
     if (evt.dataTransfer.files) {
       var droppedFile = evt.dataTransfer.files[0];
-      loadImages(droppedFile, maxImages, targetBlock, evt, targetImage);
+      loadImages(droppedFile, maxImages, targetBlock, targetImage);
     }
   };
 
@@ -66,17 +69,17 @@
   };
 
   var avatarUploader = document.querySelector('.ad-form-header__input');
-  var avatar = document.querySelector('.ad-form-header__preview img');
+  window.upload.avatar = document.querySelector('.ad-form-header__preview img');
 
   avatarUploader.addEventListener('input', function (evt) {
-    imageLoadHandler(MAX_AVATAR, avatarUploader, false, evt, avatar);
+    imageLoadHandler(MAX_AVATAR, avatarUploader, false, evt, window.upload.avatar);
   });
 
   var adImagesUploader = document.querySelector('.ad-form__input');
-  var adImagesBlock = document.querySelector('.ad-form__photo');
+  window.upload.adImagesBlock = document.querySelector('.ad-form__photo');
 
   adImagesUploader.addEventListener('input', function (evt) {
-    imageLoadHandler(MAX_UPLOADED_IMAGES, adImagesUploader, adImagesBlock, evt);
+    imageLoadHandler(MAX_UPLOADED_IMAGES, adImagesUploader, window.upload.adImagesBlock, evt);
   });
 
   var imagesDropBlock = document.querySelector('.ad-form__drop-zone');
@@ -86,7 +89,7 @@
   });
   imagesDropBlock.addEventListener('drop', function (evt) {
     preventDefaultActions(evt);
-    imageLoadHandler(MAX_UPLOADED_IMAGES, imagesDropBlock, adImagesBlock, evt);
+    imageLoadHandler(MAX_UPLOADED_IMAGES, imagesDropBlock, window.upload.adImagesBlock, evt);
   });
 
   var avatarDropBlock = document.querySelector('.ad-form-header__drop-zone');
@@ -97,7 +100,7 @@
 
   avatarDropBlock.addEventListener('drop', function (evt) {
     preventDefaultActions(evt);
-    imageLoadHandler(MAX_AVATAR, avatarDropBlock, false, evt, avatar);
+    imageLoadHandler(MAX_AVATAR, avatarDropBlock, false, evt, window.upload.avatar);
   });
 
 })();

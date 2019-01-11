@@ -2,10 +2,11 @@
 
 (function () {
 
-  var MIN_Y_COORDINATE = 130;
-  var MAX_Y_COORDINATE = 630;
+  var MIN_Y_COORDINATE = 60;
+  var MAX_Y_COORDINATE = 560;
   var ESC_CODE = 27;
-  var PIN_HALF_HEIGHT = 22;
+  var PIN_HALF_WIDTH = 32;
+  var PIN_HEIGHT = 70;
 
   window.map = {};
   window.map.map = document.querySelector('.map');
@@ -16,14 +17,22 @@
   var adForm = document.querySelector('.ad-form');
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   window.map.mapOverlay = document.querySelector('.map__overlay');
+  window.map.form = document.querySelector('.ad-form');
   window.map.advertisements = [];
+  var mainPinComputedStyle = getComputedStyle(mainPin);
+  var mainPinStartX = mainPinComputedStyle.left;
+  var mainPinStartY = mainPinComputedStyle.top;
+
+  window.map.calculateAddress = function () {
+    window.map.form.mainPinTop = Math.floor(mainPin.offsetTop + PIN_HEIGHT);
+    window.map.form.mainPinLeft = Math.floor(mainPin.offsetLeft + PIN_HALF_WIDTH);
+    adFormAddress.value = window.map.form.mainPinLeft + ', ' + window.map.form.mainPinTop;
+  };
+
+  window.map.calculateAddress();
 
   window.makeAdvertisements = function (advertisements) {
     window.map.advertisements = advertisements;
-    var copyOfAdvertisements = window.map.advertisements.map(function (item) {
-      return item;
-    });
-    window.render.renderPins(copyOfAdvertisements);
   };
 
   window.load(window.makeAdvertisements, window.errorHandler);
@@ -65,7 +74,6 @@
       e.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      window.map.calculateAddress();
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -79,11 +87,6 @@
   filterFormElements.forEach(function (item) {
     item.disabled = true;
   });
-  window.map.calculateAddress = function () {
-    window.form.mainPinTop = Math.floor(mainPin.offsetTop + mainPin.offsetHeight + PIN_HALF_HEIGHT);
-    window.form.mainPinLeft = Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2);
-    adFormAddress.value = window.form.mainPinLeft + ', ' + window.form.mainPinTop;
-  };
 
   var enablePage = function () {
     adForm.classList.remove('ad-form--disabled');
@@ -95,6 +98,43 @@
     Array.prototype.forEach.call(adFormFieldsets, function (elem) {
       elem.disabled = false;
     });
+    var copyOfAdvertisements = window.map.advertisements.map(function (item) {
+      return item;
+    });
+    window.render.renderAds(copyOfAdvertisements);
+  };
+
+  window.map.removePins = function () {
+    var cards = window.map.map.querySelectorAll('.map__card');
+    cards.forEach(function (item) {
+      window.map.map.removeChild(item);
+    });
+    var pins = window.map.map.querySelectorAll('.map__pin');
+    pins.forEach(function (item) {
+      if (!item.classList.contains('map__pin--main')) {
+        var mapPins = document.querySelector('.map__pins');
+        mapPins.removeChild(item);
+      }
+    });
+  };
+
+  var hideActiveCard = function (activeAdCard) {
+    activeAdCard.classList.remove('active');
+    activeAdCard.classList.add('hidden');
+  };
+
+  window.map.disablePage = function () {
+    mainPin.style.left = mainPinStartX;
+    mainPin.style.top = mainPinStartY;
+    var activeAdCard = window.map.map.querySelector('.active');
+    if (activeAdCard) {
+      hideActiveCard(activeAdCard);
+    }
+    adForm.classList.add('ad-form--disabled');
+    window.map.map.classList.add('map--faded');
+    window.map.mapOverlay.classList.add('map__overlay--start');
+    firstMovement = true;
+    window.map.removePins();
   };
   window.map.map.addEventListener('click', function (evt) {
     var target = evt.target;
@@ -106,8 +146,7 @@
   document.addEventListener('keydown', function (evt) {
     var activeAdCard = window.map.map.querySelector('.active');
     if (evt.keyCode === ESC_CODE && activeAdCard) {
-      activeAdCard.classList.remove('active');
-      activeAdCard.classList.add('hidden');
+      hideActiveCard(activeAdCard);
     }
   });
 })();

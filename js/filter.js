@@ -1,14 +1,14 @@
 'use strict';
 
 (function () {
-  window.filter = {};
-  window.filter.MAX_NUMPER_OF_PINS = 5;
   var MIN_PRICE_VALUE = 10000;
   var MAX_PRICE_VALUE = 50000;
   var DEBOUNCE_PAUSE = 700;
 
-  var checkboxes = Array.from(window.map.filterForm.querySelectorAll('[type=checkbox]'));
+  window.filter = {};
+  window.filter.MAX_NUMPER_OF_PINS = 5;
 
+  var checkboxes = Array.from(window.map.filterForm.querySelectorAll('[type=checkbox]'));
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
   var roomSelect = document.querySelector('#housing-rooms');
@@ -100,7 +100,7 @@
       clearTimeout(timerID);
     }
     timerID = window.setTimeout(function () {
-      window.render.renderPins(filteringData(advertisements));
+      window.render.renderAds(filteringData(advertisements));
     }, DEBOUNCE_PAUSE);
   };
 
